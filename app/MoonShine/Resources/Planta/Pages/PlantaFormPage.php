@@ -15,6 +15,8 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Json;
+use MoonShine\Fields\FieldsGroup;
+use MoonShine\Decorations\Collapse;
 use App\MoonShine\Resources\Planta\PlantaResource;
 
 /**
@@ -33,77 +35,87 @@ class PlantaFormPage extends FormPage
             Box::make('Información General', [
                 ID::make(), // ID interno de Mongo
                 
-                Text::make('ID de Planta (Negocio)', 'plantaID')
-                    ->required()
-                    ->hint('Identificador único para la planta'),
+                // Atributo corregido: 'plantaID'
+                Text::make('ID del taxon', 'taxonID')
+                ->required()
+                    //->hint('Identificador único para la planta'),
             ]),
 
             // --- PREVIEW Y TAXONOMÍA (GRID 2 COLUMNAS) ---
             Grid::make([
                 Column::make([
                     Box::make('Datos Visuales (Preview)', [
-                        // Usamos Json field. Aunque PREVIEW sea un objeto único, 
-                        // el campo Json lo maneja como estructura flexible.
-                        Json::make('Preview', 'PREVIEW')
+                        // Atributo corregido: 'preview'
+                        Json::make('Preview', 'preview')
                             ->fields([
-                                Text::make('Nombre Común', 'nombre_comun'),
-                                Text::make('Nombre Científico', 'nombre_cientifico'),
+                                Text::make('ID del Taxon', 'taxonID'),
+                                Text::make('Nombre Común', 'vernacularName'),
+                                Text::make('Nombre Científico', 'scientificName'),
+                                Text::make('Nombre Shuar', 'shuarName'),
                                 // Si guardas la URL de la imagen:
                                 Image::make('Imagen', 'imagen')
                                     ->disk('public') // Asegúrate de tener el link simbólico
                                     ->dir('plantas'),
                                 Text::make('Descripción Corta', 'descripcion'),
                             ])
-                            ->vertical() // Alineación vertical de los campos internos
-                            ->removable()
+                            ->vertical()
+                            // AÑADIR ->single() para que se guarde como un objeto {...} y no un array [{...}]
+                            ->object()
+                            ->removable(),
                     ])
                 ])->columnSpan(6),
 
                 Column::make([
                     Box::make('Información Taxonómica', [
-                        Json::make('Taxonomía', 'TAXONOMICO')
+                        // Atributo corregido: 'taxonomico'
+                        Json::make('Taxonomía', 'taxonomico')
                             ->fields([
-                                Text::make('Reino', 'reino')->default('Plantae'),
-                                Text::make('División', 'division'),
-                                Text::make('Clase', 'clase'),
-                                Text::make('Orden', 'orden'),
-                                Text::make('Familia', 'familia'),
-                                Text::make('Género', 'genero'),
+                                Text::make('ID del Taxon', 'taxonID'),
+                                Text::make('Reino', 'kingdom')->default('Plantae'),
+                                Text::make('División', 'phylum'),
+                                Text::make('Clase', 'class'),
+                                Text::make('Subclase', 'subclass'),
+                                Text::make('Super Orden', 'superOrder'),
+                                Text::make('Orden', 'order'),
+                                Text::make('Suborden', 'suborder'),
+                                Text::make('Familia', 'family'),
+                                Text::make('Género', 'genus'),
                                 Text::make('Especie', 'especie'),
                             ])
                             ->vertical()
-                            ->removable()
+                            // AÑADIR ->single() para que se guarde como un objeto {...} y no un array [{...}]
+                            ->object()
+                            ->removable(),
                     ])
                 ])->columnSpan(6),
             ]),
-
+            
             // --- DATOS CIENTÍFICOS (ARRAYS DE OBJETOS) ---
             
             Box::make('Análisis Fitoquímico', [
-                // Este es ideal para "Array de objetos"
-                Json::make('Compuestos Fitoquímicos', 'FITOQUIMICO')
+                // Atributo corregido: 'fitoquimico'
+                Json::make('Compuestos Fitoquímicos', 'fitoquimico')
                     ->fields([
-                        Text::make('Nombre del Compuesto', 'compuesto'),
-                        Text::make('Tipo de Metabolito', 'tipo'), // Ej: Alcaloide, Flavonoide
-                        Text::make('Concentración', 'concentracion'),
-                        Text::make('Método de Extracción', 'metodo'),
+                        Text::make('Nombre del Compuesto', 'measurementType'),
+                        Text::make('Tipo de Metabolito', 'measurementValue'),                        
+                        Text::make('Método de Extracción', 'measurementMethod'),
+                        Text::make('Concentración', 'measurementRemarks'),
                     ])
-                    ->removable() // Permite eliminar filas
-                    //->fullWidth() // Ocupa todo el ancho
+                    ->removable(),
             ]),
 
             Box::make('Análisis Fisicoquímico', [
-                Json::make('Propiedades Fisicoquímicas', 'FISICOQUIMICO')
+                // Atributo corregido: 'fisicoquimicos'
+                Json::make('Propiedades Fisicoquímicas', 'fisicoquimicos')
                     ->fields([
-                        Text::make('Parámetro', 'parametro')
+                        Text::make('Parámetro', 'measurementType')
                             ->hint('Ej: pH, Humedad, Cenizas'),
-                        Text::make('Valor', 'valor'),
-                        Text::make('Unidad', 'unidad')
+                        Text::make('Valor', 'measurementValue'),
+                        Text::make('Unidad', 'measurementUnit')
                             ->hint('Ej: %, mg/g'),
-                        Text::make('Referencia / Norma', 'referencia'),
+                        Text::make('Referencia / Norma', 'measurementMethod'),
                     ])
-                    ->removable()
-                    //->fullWidth()
+                    ->removable(),
             ]),
         ];
     }

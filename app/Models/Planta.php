@@ -21,11 +21,11 @@ class Planta extends Model
      * Deben coincidir con las claves raíz de tu JSON Schema.
      */
     protected $fillable = [
-        'plantaID',       // Clave primaria única del negocio
+        'taxonID',       // Clave primaria única del negocio
         'PREVIEW',        // Objeto con datos visuales y nombre común
         'TAXONOMICO',     // Objeto con la clasificación biológica
         'FITOQUIMICO',    // Array de objetos (mediciones)
-        'FISICOQUIMICO'   // Array de objetos (mediciones)
+        'FISICOQUIMICOS'   // Array de objetos (mediciones)
     ];
 
     /**
@@ -36,6 +36,6 @@ class Planta extends Model
         'PREVIEW' => 'array',
         'TAXONOMICO' => 'array',
         'FITOQUIMICO' => 'array',
-        'FISICOQUIMICO' => 'array',
+        'FISICOQUIMICOS' => 'array',
     ];
 }

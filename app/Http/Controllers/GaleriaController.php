@@ -14,22 +14,30 @@ class GaleriaController extends Controller
         if ($request->filled('buscar')) {
             $busqueda = $request->buscar;
 
-            // En MongoDB usamos "punto" para entrar a los objetos anidados.
-            // Aquí buscamos coincidencia en el Nombre Común O en el Nombre Científico.
+            // IMPORTANTE: Usamos 'PREVIEW' en mayúsculas porque así está en la BD
             $query->where(function($q) use ($busqueda) {
                 $q->where('PREVIEW.vernacularName', 'like', '%' . $busqueda . '%')
                   ->orWhere('PREVIEW.scientificName', 'like', '%' . $busqueda . '%');
             });
         }
 
-        // OPTIMIZACIÓN:
-        // Como es una galería, no necesitas cargar los arrays pesados de FITOQUIMICO 
-        // o FISICOQUIMICO. Usamos 'project' (o select) para traer solo lo visual.
+        // Proyectamos solo lo necesario.
+        // Nota: Asegúrate de que 'PREVIEW' esté en mayúsculas.
         $items = $query->project([
-            'plantaID' => 1,
-            'PREVIEW' => 1
+            'taxonID' => 1,
+            'preview' => 1 
         ])->get();
 
         return view('inicio', compact('items'));
+    }
+
+    public function show($id){
+        $planta = Planta::where('taxonID', $id)->first();
+        
+        if (!$planta) {
+            abort(404, 'Planta no encontrada');
+        }
+
+        return view('detalle', compact('planta'));
     }
 }

@@ -23,28 +23,29 @@ class PlantaIndexPage extends IndexPage
     protected function fields(): iterable
     {
         return [
-            // El ID interno de Mongo
+            // ID interno de Mongo (_id)
             ID::make()->sortable(),
 
-            // Tu ID de negocio
-            Text::make('ID Planta', 'plantaID')
+            // ID de negocio
+            Text::make('ID Taxon', 'taxonID')
                 ->sortable()
                 ->badge('purple'),
 
-            // Intentamos mostrar el nombre común accediendo al JSON con notación de puntos.
-            // Nota: Esto funciona si tu driver de BD soporta consultas JSON directas o si MoonShine lo procesa en PHP.
-            // Si da error, usa el campo Json configurado como "asKey" o simplemente muestra el ID.
-            Text::make('Nombre Común', 'PREVIEW.nombre_comun'),
-            
-            // Mostramos la familia taxonómica si existe
-            Text::make('Familia', 'TAXONOMICO.familia')
+            // Nombre común desde PREVIEW
+            Text::make('Nombre Común', 'preview.vernacularName')
+                ->sortable()
+                ->badge('green'),
+
+            // Nombre científico desde PREVIEW
+            Text::make('Nombre Científico', 'preview.scientificName')
+                ->badge('blue'),
+
+            // Familia taxonómica correcta (TAXONOMICO.family)
+            Text::make('Familia', 'taxonomico.family')
                 ->badge('gray'),
         ];
     }
 
-    /**
-     * @return list<ComponentContract>
-     */
     protected function topLayer(): array
     {
         return [
@@ -52,9 +53,6 @@ class PlantaIndexPage extends IndexPage
         ];
     }
 
-    /**
-     * @return list<ComponentContract>
-     */
     protected function mainLayer(): array
     {
         return [
@@ -62,9 +60,6 @@ class PlantaIndexPage extends IndexPage
         ];
     }
 
-    /**
-     * @return list<ComponentContract>
-     */
     protected function bottomLayer(): array
     {
         return [

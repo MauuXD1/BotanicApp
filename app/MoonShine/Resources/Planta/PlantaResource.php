@@ -11,16 +11,21 @@ use App\MoonShine\Resources\Planta\Pages\PlantaDetailPage;
 use MoonShine\Core\Resources\Resource;
 use MoonShine\Contracts\Core\PageContract;
 use MoonShine\Laravel\Resources\ModelResource;
+use MoonShine\ImportExport\Contracts\HasImportExportContract;
+use MoonShine\ImportExport\Traits\ImportExportConcern;
+use MoonShine\UI\Fields\ID;
+use MoonShine\UI\Fields\Text;
 
 /**
  * @extends ModelResource<Planta>
  */
-class PlantaResource extends ModelResource
+class PlantaResource extends ModelResource implements HasImportExportContract
 {
+
+    use ImportExportConcern;
+
     protected string $model = Planta::class;
-
     protected string $title = 'Plantas';
-
     // Columna que se usará para identificar el recurso en relaciones o títulos
     protected string $column = 'plantaID';
 
@@ -30,6 +35,7 @@ class PlantaResource extends ModelResource
     protected function pages(): array
     {
         return [
+
             PlantaIndexPage::class,
             PlantaFormPage::class,
         ];
@@ -42,6 +48,102 @@ class PlantaResource extends ModelResource
     {
         return [
             'plantaID' => ['required', 'string', 'max:255'],
+        ];
+    }
+
+    public function exportFields(): iterable
+    {
+        return [
+            // Text::make('ID Planta', 'plantaID'),
+
+            // // Usamos notación de punto con minúsculas
+            // Text::make('Nombre Común', 'preview.vernacularName'),
+            // Text::make('Nombre Científico', 'preview.scientificName'),
+            
+            // // Taxonomía
+            // Text::make('Familia', 'taxonomico.family'),
+            // Text::make('Género', 'taxonomico.genus'),
+            // Text::make('Especie', 'taxonomico.especie'),
+
+            //INTENTO 2
+
+            // 1. ID y General (PROBABLEMENTE SE QUITE ESTE ID PLANTA)
+            Text::make('ID Taxon', 'taxonID'),
+
+            // --- GRUPO PREVIEW ---
+            Text::make('Nombre Común', 'preview.vernacularName'),
+            Text::make('Nombre Científico', 'preview.scientificName'),
+            Text::make('Nombre Shuar', 'preview.shuarName'),
+            Text::make('Descripción', 'preview.descripcion'),
+            Text::make('Imagen URL', 'preview.imagen'),
+
+            // --- GRUPO TAXONOMICO ---
+            Text::make('ID del Taxon', 'taxonomico.taxonID'),
+            Text::make('Reino', 'taxonomico.kingdom'),
+            Text::make('División', 'taxonomico.phylum'),
+            Text::make('Clase', 'taxonomico.class'),
+            Text::make('Subclase', 'taxonomico.subclass'),
+            Text::make('Super Orden', 'taxonomico.superOrder'),
+            Text::make('Orden', 'taxonomico.order'),
+            Text::make('Suborden', 'taxonomico.suborder'),
+            Text::make('Familia', 'taxonomico.family'),
+            Text::make('Género', 'taxonomico.genus'),
+            Text::make('Especie', 'taxonomico.especie'),
+        ];
+    }
+    public function importFields(): iterable
+    {
+        return [
+            // Text::make('ID Planta', 'plantaID'),
+            
+            // // Mapeo inverso para guardar
+            // Text::make('Nombre Común', 'preview.vernacularName'),
+            // Text::make('Nombre Científico', 'preview.scientificName'),
+            
+            // Text::make('Familia', 'taxonomico.family'),
+            // Text::make('Género', 'taxonomico.genus'),
+            // Text::make('Especie', 'taxonomico.especie'),
+
+            //INTENTO 2 (PROBABLEMENTE SE QUITE ESTE ID PLANTA)
+            // Text::make('ID Planta', 'plantaID'),
+
+            // // --- GRUPO PREVIEW ---
+            // Text::make('Nombre Común', 'preview.vernacularName'),
+            // Text::make('Nombre Científico', 'preview.scientificName'),
+            // Text::make('Descripción', 'preview.descripcion'),
+            // Text::make('Imagen URL', 'preview.imagen'),
+
+            // // --- GRUPO TAXONOMICO ---
+            // Text::make('Reino', 'taxonomico.kingdom'),
+            // Text::make('División', 'taxonomico.phylum'),
+            // Text::make('Clase', 'taxonomico.class'),
+            // Text::make('Orden', 'taxonomico.order'),
+            // Text::make('Familia', 'taxonomico.family'),
+            // Text::make('Género', 'taxonomico.genus'),
+            // Text::make('Especie', 'taxonomico.especie'),
+
+            //Intento 3 FINAL
+            Text::make('ID Taxon', 'taxonID'),
+
+            // --- GRUPO PREVIEW ---
+            Text::make('Nombre Común', 'preview.vernacularName'),
+            Text::make('Nombre Científico', 'preview.scientificName'),
+            Text::make('Nombre Shuar', 'preview.shuarName'),
+            Text::make('Descripción', 'preview.descripcion'),
+            Text::make('Imagen URL', 'preview.imagen'),
+
+            // --- GRUPO TAXONOMICO ---
+            Text::make('ID del Taxon', 'taxonomico.taxonID'),
+            Text::make('Reino', 'taxonomico.kingdom'),
+            Text::make('División', 'taxonomico.phylum'),
+            Text::make('Clase', 'taxonomico.class'),
+            Text::make('Subclase', 'taxonomico.subclass'),
+            Text::make('Super Orden', 'taxonomico.superOrder'),
+            Text::make('Orden', 'taxonomico.order'),
+            Text::make('Suborden', 'taxonomico.suborder'),
+            Text::make('Familia', 'taxonomico.family'),
+            Text::make('Género', 'taxonomico.genus'),
+            Text::make('Especie', 'taxonomico.especie'),
         ];
     }
 }

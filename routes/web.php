@@ -6,3 +6,4 @@ use App\Http\Controllers\GaleriaController;
 
 Route::get('/', [GaleriaController::class, 'index'])->name('inicio');
 
+Route::get('/planta/{id}', [GaleriaController::class, 'show'])->name('planta.detalle');
