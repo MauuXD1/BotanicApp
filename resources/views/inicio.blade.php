@@ -31,19 +31,33 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-8 flex-grow">
-        {{-- Barra de búsqueda --}}
-        <div class="mb-8">
-            <form method="GET" action="{{ route('inicio')}}" class="flex flex-col sm:flex-row gap-3">
-                <input type="text" 
-                       name="buscar"
-                       placeholder="Buscar por nombre común o científico..." 
-                       value="{{ request('buscar') }}"
-                       class="flex-1 rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500 outline-none px-4 py-3 text-lg">
-                <button type="submit" class="px-8 py-3 bg-green-700 text-white font-semibold rounded-lg hover:bg-green-800 transition shadow-md">
-                    Buscar
+        <form method="GET" action="{{ route('inicio') }}" class="flex flex-wrap gap-4 bg-white p-6 rounded-xl shadow-sm mb-8">
+            {{-- Input de búsqueda principal --}}
+            <div class="flex-1 min-w-[300px]">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la planta</label>
+                <input type="text" name="buscar" value="{{ request('buscar') }}" 
+                    placeholder="Ej: Menta o Mentha spicata..." 
+                    class="w-full rounded-lg border-gray-300 border px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+
+            {{-- Filtro por Familia (Taxonómico) --}}
+            <div class="w-full md:w-48">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Familia</label>
+                <input type="text" name="family" value="{{ request('family') }}" placeholder="Ej: Lamiaceae"
+                    class="w-full rounded-lg border-gray-300 border px-4 py-2 focus:ring-2 focus:ring-green-500 outline-none">
+            </div>
+
+            <div class="flex items-end">
+                <button type="submit" class="bg-green-700 hover:bg-green-800 text-white font-bold py-2 px-6 rounded-lg transition shadow-md">
+                    Aplicar Filtros
                 </button>
-            </form>
-        </div>
+                @if(request()->anyFilled(['buscar', 'family', 'order']))
+                    <a href="{{ route('inicio') }}" class="ml-2 text-sm text-red-500 hover:underline py-2">Limpiar</a>
+                @endif
+            </div>
+        </form>
+
+
 
         {{-- Galería --}}
         @if($items->isEmpty())
@@ -127,6 +141,16 @@
                 @endforeach
             </div>
         @endif
+        
+        {{-- Paginación --}}
+        <div class="mt-8">
+            {{-- 
+                appends(request()->query()) asegura que los filtros de búsqueda 
+                se mantengan al cambiar de página 
+            --}}
+            {{ $items->appends(request()->query())->links() }}
+        </div>
+
     </main>
     
     <footer class="bg-white border-t mt-auto py-6">

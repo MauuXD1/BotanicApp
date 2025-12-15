@@ -75,7 +75,7 @@
                          alt="{{ $nombreComun }}" 
                          class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                     <div class="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm">
-                        ID: {{ $planta->plantaID }}
+                        ID: {{ $planta->taxonID }}
                     </div>
                 </div>
 
@@ -153,15 +153,32 @@
                             <table class="w-full text-sm text-left">
                                 <tbody class="divide-y divide-gray-100">
                                     @foreach($tax as $key => $val)
-                                        <tr class="hover:bg-gray-50 transition">
-                                            <td class="py-3 px-6 font-medium text-gray-500 capitalize bg-gray-50 w-1/3">
-                                                {{ $key }}
-                                            </td>
-                                            <td class="py-3 px-6 text-gray-800 font-semibold italic">
-                                                {{ $val }}
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                                            {{-- CASO 1: El valor es un Array (Ej: atributos_extra / subclases) --}}
+                                            @if(is_array($val))
+                                                @foreach($val as $subKey => $subVal)
+                                                    <tr class="hover:bg-gray-50 transition">
+                                                        <td class="py-3 px-6 font-medium text-gray-500 capitalize bg-gray-50 w-1/3">
+                                                            {{-- Imprimimos la clave interna (Ej: Subclase, Super Orden) --}}
+                                                            {{ $subKey }}
+                                                        </td>
+                                                        <td class="py-3 px-6 text-gray-800 font-semibold italic">
+                                                            {{ $subVal }}
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+
+                                            {{-- CASO 2: El valor es Texto normal (Ej: Reino, Familia) --}}
+                                            @elseif(is_string($val) || is_numeric($val))
+                                                <tr class="hover:bg-gray-50 transition">
+                                                    <td class="py-3 px-6 font-medium text-gray-500 capitalize bg-gray-50 w-1/3">
+                                                        {{ $key }}
+                                                    </td>
+                                                    <td class="py-3 px-6 text-gray-800 font-semibold italic">
+                                                        {{ $val }}
+                                                    </td>
+                                                </tr>
+                                            @endif
+                                        @endforeach
                                 </tbody>
                             </table>
                         @else

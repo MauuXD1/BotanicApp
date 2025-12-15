@@ -128,7 +128,7 @@ class PlantaResource extends ModelResource implements HasImportExportContract
             // --- GRUPO PREVIEW ---
             Text::make('Nombre Común', 'preview.vernacularName'),
             Text::make('Nombre Científico', 'preview.scientificName'),
-            Text::make('Nombre Shuar', 'preview.shuarName'),
+            //Text::make('Nombre Shuar', 'preview.shuarName'),
             Text::make('Descripción', 'preview.descripcion'),
             Text::make('Imagen URL', 'preview.imagen'),
 
@@ -137,8 +137,8 @@ class PlantaResource extends ModelResource implements HasImportExportContract
             Text::make('Reino', 'taxonomico.kingdom'),
             Text::make('División', 'taxonomico.phylum'),
             Text::make('Clase', 'taxonomico.class'),
-            Text::make('Subclase', 'taxonomico.subclass'),
-            Text::make('Super Orden', 'taxonomico.superOrder'),
+            //Text::make('Subclase', 'taxonomico.subclass'),
+            //Text::make('Super Orden', 'taxonomico.superOrder'),
             Text::make('Orden', 'taxonomico.order'),
             Text::make('Suborden', 'taxonomico.suborder'),
             Text::make('Familia', 'taxonomico.family'),
