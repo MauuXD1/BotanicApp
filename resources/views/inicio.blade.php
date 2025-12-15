@@ -160,7 +160,7 @@
     </footer>
 
 </body>
-@if($items->isNotEmpty())
+<!-- @if($items->isNotEmpty())
     <div class="bg-black text-green-400 p-4 m-4 rounded overflow-auto h-auto text-xs font-mono">
         <strong>DEBUG TOTAL:</strong>
         @php
@@ -169,5 +169,5 @@
         {{-- Esto imprimirá TODOS los atributos del objeto --}}
         @dump($debugItem->getAttributes()) 
     </div>
-@endif
+@endif -->
 </html>
