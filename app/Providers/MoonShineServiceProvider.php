@@ -12,6 +12,7 @@ use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\MoonShine\Resources\Planta\PlantaResource;
+//use App\MoonShine\Resources\Georeferencia\GeoreferenciaResource;
 
 class MoonShineServiceProvider extends ServiceProvider
 {
@@ -26,6 +27,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 MoonShineUserRoleResource::class,
                 
                 PlantaResource::class,
+                //GeoreferenciaResource::class,
             ])
             ->pages([
                 ...$core->getConfig()->getPages(),

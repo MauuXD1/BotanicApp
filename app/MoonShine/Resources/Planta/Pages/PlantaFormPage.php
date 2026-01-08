@@ -15,10 +15,16 @@ use MoonShine\UI\Fields\Text;
 use MoonShine\UI\Fields\Number;
 use MoonShine\UI\Fields\Image;
 use MoonShine\UI\Fields\Json;
-//use MoonShine\UI\Fields\KeyValue;
 use MoonShine\Fields\KeyValue;
 use MoonShine\Fields\FieldsGroup;
 use MoonShine\Decorations\Collapse;
+
+// IMPORTANTE: Importar HasOne y el Recurso nuevo
+use MoonShine\Laravel\Fields\Relationships\HasOne; // ✅ Correcto
+use App\MoonShine\Resources\Georeferencia\GeoreferenciaResource;
+use MoonShine\UI\Fields\Preview; // ✅ Este es el correcto
+use MoonShine\UI\Fields\Hidden;
+
 
 use App\MoonShine\Resources\Planta\PlantaResource;
 
@@ -36,26 +42,49 @@ class PlantaFormPage extends FormPage
             
             // --- SECCIÓN GENERAL ---
             Box::make('Información General', [
-                ID::make(), // ID interno de Mongo
-                
-                // Atributo corregido: 'plantaID'
-                Text::make('ID del taxon', 'taxonID')
-                ->required()
-                    //->hint('Identificador único para la planta'),
+                ID::make(),
+                Text::make('ID del taxon', 'taxonID')->required(),
             ]),
+
+            // ============================================================
+            // NUEVA SECCIÓN: MAPA Y GEOREFERENCIACIÓN
+            // ============================================================
+            Box::make('Ubicación Geográfica', [
+                
+                // Mapa (Igual que antes)
+                Preview::make('Mapa Interactivo')
+                    ->fill(view('admin.components.map-picker', [
+                        'uniqueId' => uniqid(),
+                        'lat' => $this->getResource()->getItem()?->georeferencia?->decimalLatitude,
+                        'lng' => $this->getResource()->getItem()?->georeferencia?->decimalLongitude,
+                    ])),
+
+                // Inputs (Simplificados y Limpios)
+                Grid::make([
+                    Column::make([
+                        // Solo necesitamos el name 'lat_temp'
+                        Text::make('Latitud', 'lat_temp')
+                            ->required(),
+                    ])->columnSpan(6),
+
+                    Column::make([
+                        // Solo necesitamos el name 'lng_temp'
+                        Text::make('Longitud', 'lng_temp')
+                            ->required(),
+                    ])->columnSpan(6),
+                ]),
+            ]),
+            // ============================================================
 
             // --- PREVIEW ---
             Grid::make([
                 Column::make([
                     Box::make('Datos Visuales (Preview)', [
-                        // Atributo corregido: 'preview'
                         Json::make('Preview', 'preview')
                             ->fields([
                                 Text::make('ID del Taxon', 'taxonID'),
                                 Text::make('Nombre Común', 'vernacularName'),
                                 Text::make('Nombre Científico', 'scientificName'),
-                                // Text::make('Nombre Shuar', 'shuarName'),
-                                // Si guardas la URL de la imagen:
                                 Image::make('Imagen', 'imagen')
                                     ->disk('public') 
                                     ->dir('plantas'),
@@ -76,20 +105,12 @@ class PlantaFormPage extends FormPage
                                 Text::make('Reino', 'kingdom')->default('Plantae'),
                                 Text::make('División', 'phylum'),
                                 Text::make('Clase', 'class'),
-                                // Text::make('Subclase', 'subclass'),
-                                // Text::make('Super Orden', 'superOrder'),
                                 Text::make('Orden', 'order'),
-                                // Text::make('Suborden', 'suborder'),
                                 Text::make('Familia', 'family'),
                                 Text::make('Género', 'genus'),
                                 Text::make('Especie', 'especie'),
-
-                                // 2. CAMPOS DINÁMICOS (Aquí se agregaría campos como Subclase, Super Orden, etc. a demanda)
-                                Json::make('Otros Atributos', 'atributos_extra') // Guardará en taxonomico.atributos_extra
-                                    ->keyValue(
-                                        key: 'Atributo (Ej: Subclase)', // Etiqueta para la clave
-                                        value: 'Valor'                 // Etiqueta para el valor
-                                    )
+                                Json::make('Otros Atributos', 'atributos_extra')
+                                    ->keyValue('Atributo', 'Valor')
                                     ->removable(),
                             ])
                             ->vertical()
@@ -100,9 +121,7 @@ class PlantaFormPage extends FormPage
             ]),
             
             // --- DATOS DE ANALISIS CIENTÍFICOS ---
-            
             Box::make('Análisis Fitoquímico', [
-                // Atributo corregido: 'fitoquimico'
                 Json::make('Compuestos Fitoquímicos', 'fitoquimico')
                     ->fields([
                         Text::make('Nombre del Compuesto', 'measurementType'),
@@ -114,14 +133,11 @@ class PlantaFormPage extends FormPage
             ]),
 
             Box::make('Análisis Fisicoquímico', [
-                // Atributo corregido: 'fisicoquimicos'
                 Json::make('Propiedades Fisicoquímicas', 'fisicoquimico')
                     ->fields([
-                        Text::make('Parámetro', 'measurementType')
-                            ->hint('Ej: pH, Humedad, Cenizas'),
+                        Text::make('Parámetro', 'measurementType')->hint('Ej: pH, Humedad'),
                         Text::make('Valor', 'measurementValue'),
-                        Text::make('Unidad', 'measurementUnit')
-                            ->hint('Ej: %, mg/g'),
+                        Text::make('Unidad', 'measurementUnit')->hint('Ej: %, mg/g'),
                         Text::make('Referencia / Norma', 'measurementMethod'),
                     ])
                     ->removable(),

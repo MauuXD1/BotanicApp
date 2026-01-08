@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use MoonShine\Models\MoonshineUser;
+use App\Models\Planta;
 
 class AppServiceProvider extends ServiceProvider
 {

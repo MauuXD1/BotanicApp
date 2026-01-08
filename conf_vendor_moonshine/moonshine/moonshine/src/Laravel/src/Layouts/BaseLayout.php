@@ -212,28 +212,28 @@ abstract class BaseLayout extends AbstractLayout
         return Search::make();
     }
 
-    // protected function getFooterMenu(): array
-    // {
-    //     return [
-    //         'https://getmoonshine.app/docs' => 'Documentation',
-    //     ];
-    // }
+    protected function getFooterMenu(): array
+    {
+        return [
+            'http://espoch.edu.ec/' => 'ESPOCH',
+        ];
+    }
 
-    // protected function getFooterCopyright(): string
-    // {
-    //     return \sprintf(
-    //         <<<'HTML'
-    //             &copy; 2021-%d Made with ❤️ by
-    //             <a href="https://cutcode.dev"
-    //                 class="font-semibold text-primary"
-    //                 target="_blank"
-    //             >
-    //                 CutCode
-    //             </a>
-    //             HTML,
-    //         now()->year,
-    //     );
-    // }
+    protected function getFooterCopyright(): string
+    {
+        return \sprintf(
+            <<<'HTML'
+                &copy; 2025-%d Hecho con ❤️ por su servidor
+                <a href="http://espoch.edu.ec/"
+                    class="font-semibold text-primary"
+                    target="_blank"
+                >
+                    CutCode
+                </a>
+                HTML,
+            now()->year,
+        );
+    }
 
     protected function getFooterComponent(): Footer
     {

@@ -11,6 +11,7 @@ use MoonShine\Contracts\ColorManager\ColorManagerContract;
 use MoonShine\Contracts\ColorManager\PaletteContract;
 use App\MoonShine\Resources\Planta\PlantaResource;
 use MoonShine\MenuManager\MenuItem;
+//use App\MoonShine\Resources\Georeferencia\GeoreferenciaResource;
 
 final class MoonShineLayout extends AppLayout
 {
@@ -31,6 +32,7 @@ final class MoonShineLayout extends AppLayout
         return [
             ...parent::menu(),
             MenuItem::make(PlantaResource::class, 'Planta'),
+            //MenuItem::make(GeoreferenciaResource::class, 'Georeferencia'),
         ];
     }
 

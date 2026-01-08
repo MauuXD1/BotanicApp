@@ -15,10 +15,11 @@ use MoonShine\ImportExport\Contracts\HasImportExportContract;
 use MoonShine\ImportExport\Traits\ImportExportConcern;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
-
+use Illuminate\Database\Eloquent\Model;
 /**
  * @extends ModelResource<Planta>
  */
+
 class PlantaResource extends ModelResource implements HasImportExportContract
 {
 
