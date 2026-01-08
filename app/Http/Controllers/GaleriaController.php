@@ -117,8 +117,8 @@ class GaleriaController extends Controller
     }
 
     public function show($id){
-        // Busca exacto por ID (Index automático en _id o taxonID si es único)
-        $planta = Planta::where('taxonID', $id)->first();
+        // AGREGAMOS 'with('georeferencia')' para traer la ubicación en la misma consulta
+        $planta = Planta::with('georeferencia')->where('taxonID', $id)->first();
         
         if (!$planta) {
             abort(404, 'Planta no encontrada');

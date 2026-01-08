@@ -180,18 +180,19 @@
                         $nombreComun = $data['vernacularName'] ?? 'Nombre Desconocido';
                         $nombreCientifico = $data['scientificName'] ?? '';
                         
-                        // Lógica de imagen mejorada para manejar strings y URLs
-                        $rutaImagen = $data['imagen'] ?? null;
-                        if (is_string($rutaImagen) && strtoupper($rutaImagen) === 'N/A') {
-                            $rutaImagen = null;
-                        }
+                        // 1. Obtener la ruta y limpiar posibles espacios en blanco
+                        $rutaImagen = isset($data['imagen']) ? trim($data['imagen']) : null;
                         
+                        // 2. Definir imagen por defecto
                         $imagenUrl = asset('/' . "PlantaIcono.png"); 
 
-                        if ($rutaImagen) {
-                            if (filter_var($rutaImagen, FILTER_VALIDATE_URL)) {
+                        if ($rutaImagen && strtoupper($rutaImagen) !== 'N/A') {
+                            // 3. Comprobar si es una URL válida (http o https)
+                            if (str_starts_with($rutaImagen, 'http://') || str_starts_with($rutaImagen, 'https://')) {
                                 $imagenUrl = $rutaImagen;
-                            } else {
+                            } 
+                            // 4. Si no es URL, asumimos que es un archivo local en storage
+                            else {
                                 $imagenUrl = asset('storage/' . $rutaImagen);
                             }
                         }
