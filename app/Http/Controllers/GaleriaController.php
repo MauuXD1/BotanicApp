@@ -10,92 +10,114 @@ class GaleriaController extends Controller
 {
     public function index(Request $request)
     {
+        // Iniciamos la query
         $query = Planta::query();
-        //DB::enableQueryLog();
-        // Esto asegura que 'arbol' sea igual a 'árbol' y 'ARBOL'
+
+        // Aplicamos collation en español para que ñ, acentos, etc. se ordenen/busquen bien
         $query->options(['collation' => ['locale' => 'es', 'strength' => 1]]);
 
-
-        // 1. Lógica de búsqueda principal (Nombre común o científico)
+        // ------------------------------------------------------------------
+        // 1. BÚSQUEDA GENERAL (Uso del Índice de Texto: idx_busqueda_texto_preview)
+        // ------------------------------------------------------------------
         if ($request->filled('buscar')) {
-            $busqueda = $request->buscar;
-
-            // CORRECCIÓN: Usamos 'preview' en minúsculas según tu JSON
-            $query->where(function($q) use ($busqueda) {
-                // 'options' => 'i' hace que la búsqueda sea insensible a mayúsculas/minúsculas (case-insensitive)
-                $q->where('preview.vernacularName', 'like', $busqueda . '%')
-                  //->options(['collation' => ['locale' => 'es', 'strength' => 1]])//ESTA PARTE ES POR QUE EL índice está ordenado bajo reglas del idioma español: { "PREVIEW.vernacularName": 1 }, { collation: { locale: "es", strength: 1 } }
-                  ->orWhere('preview.scientificName', 'like', $busqueda . '%');
+            // La forma más eficiente de usar un índice "text" en MongoDB es con $text $search.
+            // Busca palabras completas o frases en los campos 'preview.vernacularName' y 'scientificName'
+            $query->whereRaw(['$text' => ['$search' => $request->buscar]]);
+            
+            // Opcional: Si prefieres búsqueda parcial (ej: "Men" encuentra "Menta"),
+            // el índice 'text' no es ideal. Si quieres eso, descomenta esto y usa un índice normal:
+            /*
+            $query->where(function($q) use ($request) {
+                $busqueda = $request->buscar;
+                $q->where('preview.vernacularName', 'regex', new \MongoDB\BSON\Regex('^'.$busqueda, 'i'))
+                  ->orWhere('preview.scientificName', 'regex', new \MongoDB\BSON\Regex('^'.$busqueda, 'i'));
             });
+            */
         }
 
+        // ------------------------------------------------------------------
+        // 2. FILTROS TAXONÓMICOS (Indices: idx_taxonomico_BCB y idx_taxonomico_BTJ)
+        // ------------------------------------------------------------------
+        // Usamos Regex con '^' (empieza con) y 'i' (insensible a mayúsculas).
+        // Al usar '^', MongoDB puede usar el índice para optimizar la búsqueda.
 
-        // 2. Lógica de búsqueda por Familia (Campo que tienes en tu Blade)
-        if ($request->filled('family')) {
-            // Según tu JSON, la familia está dentro del objeto 'taxonomico'
-            $query->where('taxonomico.family', 'like', '%' . $request->family . '%');
+        $taxoFields = [
+            'kingdom', 'phylum', 'class', 'order', // idx_taxonomico_BCB
+            'family', 'genus'                      // idx_taxonomico_BTJ
+        ];
+
+        foreach ($taxoFields as $field) {
+            if ($request->filled($field)) {
+                // Ejemplo: taxonomico.family LIKE 'Lamiaceae%'
+                $query->where('taxonomico.' . $field, 'regex', new \MongoDB\BSON\Regex('^' . $request->$field, 'i'));
+            }
         }
 
-        // =================================================================
-        // 🛑 ZONA DE DEBUG DE MÉTRICAS (Actualizada a PREVIEW)
-        // =================================================================
-        if ($request->filled('buscar')) {
-             $busqueda = $request->buscar;
-             
-             // Comando manual para ver estadísticas reales
-             // NOTA: Aquí también cambiamos a 'PREVIEW' para el debug
-             $comando = [
-                'explain' => [
-                    'find' => 'plantas', 
-                    'filter' => [
-                        '$or' => [
-                            ['preview.vernacularName' => ['$regex' => '^' . $busqueda, '$options' => 'i']],
-                            ['preview.scientificName' => ['$regex' => '^' . $busqueda, '$options' => 'i']]
-                            //['taxonomico.family' => ['$regex' => '^' . $busqueda, '$options' => 'i']]
-                            
-                        ]
-                    ],
-                    'collation' => ['locale' => 'es', 'strength' => 1]
-                ],
-                'verbosity' => 'executionStats' 
-             ];
-
-             try {
-                 $resultado = DB::connection('mongodb')->getDatabase()->command($comando);
-                 $stats = $resultado->toArray()[0];
-                 
-                 dd([
-                    'RESULTADO' => 'Debug Exitoso',
-                    'BUSQUEDA' => $busqueda,
-                    'DEVUELTOS (nReturned)' => $stats->executionStats->nReturned,
-                    'ESCANEADOS (totalDocsExamined)' => $stats->executionStats->totalDocsExamined,
-                    'TIEMPO (ms)' => $stats->executionStats->executionTimeMillis,
-                    'PLAN GANADOR' => $stats->queryPlanner->winningPlan->stage ?? 'N/A' // Esperamos IXSCAN
-                 ]);
-                 
-             } catch (\Exception $e) {
-                 dd("Error en debug: " . $e->getMessage());
-             }
+        // ------------------------------------------------------------------
+        // 3. FILTROS FITOQUÍMICOS (Indices: idx_fitoquimico_method, idx_fitoquimico_type_value)
+        // ------------------------------------------------------------------
+        
+        // A. Por Método (Sparse Index)
+        if ($request->filled('fito_method')) {
+            $query->where('fitoquimico.measurementMethod', 'regex', new \MongoDB\BSON\Regex('^' . $request->fito_method, 'i'));
         }
-        // =================================================================
-        // =================================================================
-        // =================================================================
 
+        // B. Por Tipo y Valor (Compound Index)
+        // Usamos elemMatch para asegurar que el Tipo y el Valor estén en el MISMO objeto del array
+        if ($request->filled('fito_type') || $request->filled('fito_val')) {
+            $elemMatch = [];
 
+            if ($request->filled('fito_type')) {
+                $elemMatch['measurementType'] = new \MongoDB\BSON\Regex('^' . $request->fito_type, 'i');
+            }
+            if ($request->filled('fito_val')) {
+                // Asumiendo que guardas números, si guardas strings usa Regex. 
+                // Aquí intento buscar coincidencias exactas o mayores si es numérico, 
+                // pero lo dejo como regex flexible para texto/número mixto.
+                $elemMatch['measurementValue'] = new \MongoDB\BSON\Regex('^' . $request->fito_val, 'i');
+            }
 
-        // 3. Proyección de datos
-        // Seleccionamos taxonID y preview. 
-        // Si necesitas mostrar la familia en la tarjeta, agrega 'taxonomico' => 1 aquí.
+            $query->where('fitoquimico', 'elemMatch', $elemMatch);
+        }
+
+        // ------------------------------------------------------------------
+        // 4. FILTROS FISICOQUÍMICOS (Misma lógica)
+        // ------------------------------------------------------------------
+        
+        if ($request->filled('fisico_method')) {
+            $query->where('fisicoquimico.measurementMethod', 'regex', new \MongoDB\BSON\Regex('^' . $request->fisico_method, 'i'));
+        }
+
+        if ($request->filled('fisico_type') || $request->filled('fisico_val')) {
+            $elemMatch = [];
+            if ($request->filled('fisico_type')) {
+                $elemMatch['measurementType'] = new \MongoDB\BSON\Regex('^' . $request->fisico_type, 'i');
+            }
+            if ($request->filled('fisico_val')) {
+                $elemMatch['measurementValue'] = new \MongoDB\BSON\Regex('^' . $request->fisico_val, 'i');
+            }
+            $query->where('fisicoquimico', 'elemMatch', $elemMatch);
+        }
+
+        // ------------------------------------------------------------------
+        // 5. PROYECCIÓN Y PAGINACIÓN
+        // ------------------------------------------------------------------
+        // Proyectamos solo lo necesario para la tarjeta. 
+        // Agregamos 'taxonomico' por si quieres mostrar familia/nombre científico extra.
         $items = $query->project([
             'taxonID' => 1,
-            'preview' => 1
-        ])->paginate(12);//->get();
+            'preview' => 1,
+            // 'taxonomico' => 1 // Descomentar si necesitas datos taxonómicos en la vista
+        ])->paginate(12);
 
-        //dd(DB::getQueryLog());
+        // Añadimos los parámetros a la URL de paginación
+        $items->appends($request->all());
+
         return view('inicio', compact('items'));
     }
 
     public function show($id){
+        // Busca exacto por ID (Index automático en _id o taxonID si es único)
         $planta = Planta::where('taxonID', $id)->first();
         
         if (!$planta) {

@@ -7,7 +7,7 @@
     {{-- TailwindCSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-50 text-gray-800 font-sans">
+<body class="bg-gray-400 text-gray-800 font-sans">
 
     {{-- ================= HEADER ================= --}}
     <header class="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
@@ -35,7 +35,7 @@
         $preview    = $planta->preview ?? $planta->PREVIEW ?? [];
         $tax        = $planta->taxonomico ?? $planta->TAXONOMICO ?? [];
         $fito       = $planta->fitoquimico ?? $planta->FITOQUIMICO ?? [];
-        $fisico     = $planta->fisicoquimicos ?? $planta->FISICOQUIMICO ?? [];
+        $fisico     = $planta->fisicoquimico ?? $planta->FISICOQUIMICO ?? [];
 
         // 2. Datos Texto
         $nombreComun = $preview['vernacularName'] ?? $preview['nombre_comun'] ?? 'Sin Nombre Común';
@@ -47,7 +47,7 @@
         if ($rutaImagen) {
             $imagenUrl = str_starts_with($rutaImagen, 'http') ? $rutaImagen : asset('storage/' . $rutaImagen);
         } else {
-            $imagenUrl = 'https://via.placeholder.com/800x600?text=Sin+Imagen+Disponible';
+            $imagenUrl = asset('/' . "PlantaIcono.png");
         }
     @endphp
 
@@ -55,8 +55,8 @@
     <main class="max-w-7xl mx-auto px-6 py-10">
 
         {{-- Navegación Breadcrumb --}}
-        <nav class="flex mb-6 text-sm text-gray-500">
-            <a href="{{ route('inicio') }}" class="hover:text-green-600 flex items-center transition">
+        <nav class="flex mb-6 text-sm text-gray-900">
+            <a href="{{ route('inicio') }}" class="hover:text-green-900 flex items-center transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>

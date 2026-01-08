@@ -115,7 +115,7 @@ class PlantaFormPage extends FormPage
 
             Box::make('Análisis Fisicoquímico', [
                 // Atributo corregido: 'fisicoquimicos'
-                Json::make('Propiedades Fisicoquímicas', 'fisicoquimicos')
+                Json::make('Propiedades Fisicoquímicas', 'fisicoquimico')
                     ->fields([
                         Text::make('Parámetro', 'measurementType')
                             ->hint('Ej: pH, Humedad, Cenizas'),

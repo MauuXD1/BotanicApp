@@ -24,7 +24,7 @@ class PlantaIndexPage extends IndexPage
     {
         return [
             // ID interno de Mongo (_id)
-            ID::make()->sortable(),
+            //ID::make()->sortable(),
 
             // ID de negocio
             Text::make('ID Taxon', 'taxonID')

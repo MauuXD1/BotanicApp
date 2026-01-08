@@ -33,8 +33,8 @@ return [
         'mongodb' => [
             'driver' => 'mongodb',
             'port' => env('DB_PORT', 27017),
-            'host' => env('DB_HOST', 'lochalhost'),
-            'database' => env('DB_DATABASE', 'otroplantas'),
+            'host' => env('DB_HOST', 'localhost'),
+            'database' => env('DB_DATABASE', 'DatosTxFtFs'),
         ],
 
         'sqlite' => [
