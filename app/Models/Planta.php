@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Planta extends Model
 {
     use HasFactory;
-
-    // protected $connection = 'mongodb'; // Descomentar si no es la conexión por defecto
     
     /**
      * Define el nombre de la colección en MongoDB (opcional, pero recomendado)
@@ -25,11 +23,11 @@ class Planta extends Model
      * Deben coincidir con las claves raíz de tu JSON Schema.
      */
     protected $fillable = [
-        'taxonID',       // Clave primaria única del negocio
-        'PREVIEW',        // Objeto con datos visuales y nombre común
-        'TAXONOMICO',     // Objeto con la clasificación biológica
-        'FITOQUIMICO',    // Array de objetos (mediciones)
-        'FISICOQUIMICO',   // Array de objetos (mediciones)
+        'taxonID',       
+        'PREVIEW',        
+        'TAXONOMICO',     
+        'FITOQUIMICO',    
+        'FISICOQUIMICO',   
     ];
 
     /**
@@ -52,12 +50,13 @@ class Planta extends Model
     }
 
     /**
-     * LA MAGIA (Eventos del Modelo)
+     * (Eventos del Modelo) no tuve opccion xD
      */
     protected static function booted()
     {
-        // EVENTO 1: "saving" (Se ejecuta ANTES de guardar en Mongo)
-        // Aquí limpiamos la suciedad para que NO entre a la colección 'plantas'
+        // EVENTO 1: "saving" (Se ejecuta ANTES de guardar en MongDB)
+        // Aquí limpiamos los datos georeferenciales para que NO entre a la colección 'plantas'
+        // porque ingresa en el mismo formulario pero aqui van a la otra colección
         static::saving(function ($planta) {
             // Borramos explícitamente los campos temporales del array de atributos
             unset($planta->attributes['lat_temp']);

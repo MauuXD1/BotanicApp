@@ -13,27 +13,65 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
     <style>
-        /* Estilos para el mapa */
+        :root {
+            --verde-institucional: #1B4332;
+            --verde-clorofila: #2D6A4F;
+            --verde-brote: #99D98C;
+            --blanco-botanico: #F8FBF8;
+            --gris-carbon: #404040;
+            --blanco-puro: #ffffff;
+
+            --primary: var(--verde-clorofila);
+            --primary-dark: var(--verde-institucional);
+            --muted-green: var(--verde-brote);
+            --bg-light: var(--blanco-botanico);
+            --text-dark: var(--gris-carbon);
+        }
+
+        /* Utilidades de color (coherentes con inicio.blade.php) */
+        header { background-color: var(--verde-institucional) !important; }
+        .header-link { color: var(--verde-brote) !important; }
+        .header-link:hover { color: var(--blanco-botanico) !important; }
+        .logo-name { color: var(--verde-clorofila) !important; }
+
+        .btn-primary { background-color: var(--verde-clorofila) !important; color: var(--blanco-puro) !important; border: none; }
+        .btn-primary:hover { background-color: var(--verde-institucional) !important; }
+
+        .bg-light { background-color: var(--blanco-botanico) !important; }
+        .badge-primary { background-color: var(--verde-institucional) !important; color: var(--blanco-puro) !important; }
+        .text-primary { color: var(--verde-clorofila) !important; }
+        .text-primary-strong { color: var(--verde-institucional) !important; }
+        .border-accent { border-color: var(--verde-clorofila) !important; }
+        .bg-gradient-plant { background: linear-gradient(to right, var(--bg-light), var(--blanco-puro)); }
+        .accent-btn-link { color: var(--verde-clorofila) !important; }
+        .accent-btn-link:hover { color: var(--verde-institucional) !important; }
+
+        /* Map styles */
         #map-detail { height: 100%; width: 100%; z-index: 1; }
-    </style>
+
+        /* Text neutral */
+        .text-gray-800 { color: var(--gris-carbon) !important; }
+        .bg-white { background-color: var(--blanco-puro) !important; }
+        .bg-card-header { background-color: var(--verde-institucional) !important; }
+    </style> 
 </head>
-<body class="bg-gray-400 text-gray-800 font-sans">
+<body class="bg-gray-200 min-h-screen text-gray-800 font-sans">
 
     {{-- HEADER (Igual que antes) --}}
-    <header class="bg-gray-900 text-white shadow-lg sticky top-0 z-50">
+    <header class="text-white shadow-lg sticky top-0 z-50">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
             <div class="flex space-x-8">
-                <a href="{{ route('inicio') }}" class="hover:text-green-400 transition font-medium">Inicio</a>
+                <a href="{{ route('inicio') }}" class="header-link transition font-medium">Inicio</a>
             </div>
             <div>
-                @if(file_exists(public_path('logo.webp')))
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10">
+                @if(file_exists(public_path('logo.png')))
+                    <img src="{{ asset('logo.png') }}" alt="Logo" class="h-10">
                 @else
-                    <span class="text-xl font-bold text-green-500 tracking-wider">BotanicApp</span>
+                    <span class="text-xl font-bold logo-name tracking-wider">BotanicApp</span>
                 @endif
             </div>
             <div class="flex space-x-8">
-                <a href="/admin" class="px-4 py-2 bg-gray-800 rounded-lg hover:bg-gray-700 transition text-sm">Panel Admin</a>
+                <a href="/admin" class="header-link transition bg-gray-800 px-4 py-2 rounded-lg text-sm">Panel Admin</a>
             </div>
         </div>
     </header>
@@ -67,7 +105,7 @@
 
         {{-- Breadcrumb --}}
         <nav class="flex mb-6 text-sm text-gray-900">
-            <a href="{{ route('inicio') }}" class="hover:text-green-900 flex items-center transition">
+            <a href="{{ route('inicio') }}" class="accent-btn-link flex items-center transition">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
@@ -80,18 +118,18 @@
         {{-- SECCIÓN HERO (Igual que antes) --}}
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10 border border-gray-100">
             <div class="md:flex h-auto lg:h-[500px]">
-                <div class="md:w-1/2 relative bg-gray-200 h-80 md:h-full group">
+                <div class="md:w-1/2 relative bg-light h-80 md:h-full group">
                     <img src="{{ $imagenUrl }}" alt="{{ $nombreComun }}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
-                    <div class="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm">
+                    <!-- <div class="absolute top-4 left-4 bg-black/60 text-white px-3 py-1 rounded-full text-xs font-mono backdrop-blur-sm">
                         ID: {{ $planta->taxonID }}
-                    </div>
+                    </div> -->
                 </div>
                 <div class="p-8 md:w-1/2 flex flex-col bg-white">
                     <div class="mb-4">
-                        <span class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white bg-gray-900 rounded-sm">Ficha Botánica</span>
+                        <span class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] badge-primary rounded-sm">Ficha Botánica</span>
                     </div>
-                    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 leading-tight mb-1">{{ $nombreComun }}</h1>
-                    <h2 class="text-2xl text-green-700 italic font-serif mb-6 pb-4 border-b border-gray-100 inline-block w-full">{{ $nombreCientifico }}</h2>
+                    <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-800 leading-tight mb-1">{{ $nombreComun }}</h1>
+                    <h2 class="text-2xl text-primary italic font-serif mb-6 pb-4 border-b border-gray-100 inline-block w-full">{{ $nombreCientifico }}</h2>
                     <div class="prose prose-sm prose-green text-gray-600 leading-relaxed mb-8 overflow-y-auto max-h-40 pr-2">
                         <p>{{ $descripcion }}</p>
                     </div>
@@ -99,14 +137,14 @@
                         <div class="grid grid-cols-2 gap-6">
                             @if(!empty($tax['family']))
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Familia</span>
-                                    <span class="text-lg font-serif text-gray-800 italic border-l-2 border-green-500 pl-3">{{ $tax['family'] }}</span>
+                                    <span class="text-[15px] uppercase tracking-widest text-gray-500 font-bold mb-1">Familia</span>
+                                    <span class="text-lg font-serif text-gray-800 italic border-l-2 border-accent pl-3">{{ $tax['family'] }}</span>
                                 </div>
                             @endif
                             @if(!empty($tax['kingdom']))
                                 <div class="flex flex-col">
-                                    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-1">Reino</span>
-                                    <span class="text-lg font-serif text-gray-800 italic border-l-2 border-purple-500 pl-3">{{ $tax['kingdom'] }}</span>
+                                    <span class="text-[15px] uppercase tracking-widest text-gray-500 font-bold mb-1">Reino</span>
+                                    <span class="text-lg font-serif text-gray-800 italic border-l-2 border-accent pl-3">{{ $tax['kingdom'] }}</span>
                                 </div>
                             @endif
                         </div>
@@ -121,9 +159,9 @@
                 
                 {{-- Tabla Taxonómica --}}
                 <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                    <div class="bg-gray-800 px-6 py-4 flex items-center justify-between">
+                    <div class="bg-card-header px-6 py-4 flex items-center justify-between">
                         <h3 class="text-lg font-bold text-white flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                            <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
                             Taxonomía
                         </h3>
                     </div>
@@ -160,13 +198,13 @@
                 <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
                     <div class="bg-gray-800 px-6 py-4 border-b border-gray-700">
                         <h3 class="text-lg font-bold text-white flex items-center">
-                            <svg class="w-5 h-5 mr-2 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <svg class="w-5 h-5 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
                             Ubicación Geográfica
                         </h3>
                     </div>
                     
                     {{-- Contenedor del Mapa --}}
-                    <div class="h-80 bg-gray-100 relative">
+                    <div class="h-80 bg-light relative">
                         @if($lat && $lng)
                             <div id="map-detail"></div>
                         @else
@@ -187,9 +225,9 @@
                 {{-- NUEVO: TABLA FITOQUÍMICA (LIMITADA A 8) --}}
                 {{-- ================================================= --}}
                 <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-green-50 to-white">
-                        <h3 class="text-xl font-bold text-gray-800 text-green-700">Análisis Fitoquímico</h3>
-                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">{{ count($fito) }} Registros</span>
+                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-plant">
+                        <h3 class="text-xl font-bold text-gray-800 text-primary">Análisis Fitoquímico</h3>
+                        <span class="bg-light text-primary text-xs px-2 py-1 rounded-full font-bold">{{ count($fito) }} Registros</span>
                     </div>
                     <div class="overflow-x-auto">
                         @if(count($fito) > 0)
@@ -207,7 +245,7 @@
                                         {{-- Lógica de ocultar: Si el índice >= 8, agregamos la clase 'hidden' --}}
                                         <tr class="hover:bg-gray-50 transition fito-row {{ $loop->index >= 8 ? 'hidden' : '' }}">
                                             <td class="py-4 px-6 font-bold text-gray-800">{{ $item['measurementType'] ?? 'N/A' }}</td>
-                                            <td class="py-4 px-6 text-green-600 font-bold font-mono">{{ $item['measurementValue'] ?? '--' }}</td>
+                                            <td class="py-4 px-6 text-primary font-bold font-mono">{{ $item['measurementValue'] ?? '--' }}</td>
                                             <td class="py-4 px-6 text-gray-600">{{ $item['measurementMethod'] ?? '-' }}</td>
                                             <td class="py-4 px-6 text-gray-500 italic text-xs">{{ $item['measurementRemarks'] ?? '' }}</td>
                                         </tr>
@@ -218,7 +256,7 @@
                             {{-- Botón Ver Más --}}
                             @if(count($fito) > 8)
                                 <div class="bg-gray-50 p-3 text-center border-t border-gray-100">
-                                    <button onclick="toggleTable('fito')" id="btn-fito" class="text-green-600 font-bold hover:text-green-800 text-sm flex items-center justify-center w-full focus:outline-none">
+                                    <button onclick="toggleTable('fito')" id="btn-fito" class="accent-btn-link font-bold text-sm flex items-center justify-center w-full focus:outline-none">
                                         <span>Ver todos los compuestos</span>
                                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>
@@ -234,9 +272,9 @@
                 {{-- NUEVO: TABLA FISICOQUÍMICA (LIMITADA A 8) --}}
                 {{-- ================================================= --}}
                 <div class="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-to-r from-blue-50 to-white">
-                        <h3 class="text-xl font-bold text-gray-800 text-blue-700">Análisis Fisicoquímico</h3>
-                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full font-bold">{{ count($fisico) }} Registros</span>
+                    <div class="px-6 py-5 border-b border-gray-200 flex justify-between items-center bg-gradient-plant">
+                        <h3 class="text-xl font-bold text-gray-800 text-primary">Análisis Fisicoquímico</h3>
+                        <span class="bg-light text-primary text-xs px-2 py-1 rounded-full font-bold">{{ count($fisico) }} Registros</span>
                     </div>
                     <div class="overflow-x-auto">
                         @if(count($fisico) > 0)
@@ -253,7 +291,7 @@
                                     @foreach($fisico as $item)
                                         <tr class="hover:bg-gray-50 transition fisico-row {{ $loop->index >= 8 ? 'hidden' : '' }}">
                                             <td class="py-4 px-6 font-bold text-gray-800">{{ $item['measurementType'] ?? 'N/A' }}</td>
-                                            <td class="py-4 px-6 text-blue-600 font-bold font-mono">{{ $item['measurementValue'] ?? '--' }}</td>
+                                            <td class="py-4 px-6 text-primary font-bold font-mono">{{ $item['measurementValue'] ?? '--' }}</td>
                                             <td class="py-4 px-6 text-gray-600">{{ $item['measurementUnit'] ?? '-' }}</td>
                                             <td class="py-4 px-6 text-gray-500">{{ $item['measurementMethod'] ?? '-' }}</td>
                                         </tr>
@@ -264,7 +302,7 @@
                              {{-- Botón Ver Más --}}
                              @if(count($fisico) > 8)
                                 <div class="bg-gray-50 p-3 text-center border-t border-gray-100">
-                                    <button onclick="toggleTable('fisico')" id="btn-fisico" class="text-blue-600 font-bold hover:text-blue-800 text-sm flex items-center justify-center w-full focus:outline-none">
+                                    <button onclick="toggleTable('fisico')" id="btn-fisico" class="accent-btn-link font-bold text-sm flex items-center justify-center w-full focus:outline-none">
                                         <span>Ver todos los parámetros</span>
                                         <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                                     </button>

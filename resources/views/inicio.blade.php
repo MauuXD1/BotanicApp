@@ -7,6 +7,22 @@
     <script src="https://cdn.tailwindcss.com"></script>
     {{-- Estilos adicionales para transiciones suaves --}}
     <style>
+        :root {
+            --verde-institucional: #1B4332;
+            --verde-clorofila: #2D6A4F;
+            --verde-brote: #99D98C;
+            --blanco-botanico: #F8FBF8;
+            --gris-carbon: #404040;
+            --blanco-puro: #ffffff;
+
+            --primary: var(--verde-clorofila);
+            --primary-dark: var(--verde-institucional);
+            --muted-green: var(--verde-brote);
+            --bg-light: var(--blanco-botanico);
+            --text-dark: var(--gris-carbon);
+        }
+
+        /* Transiciones panel filtros */
         .filters-panel {
             transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
             max-height: 0;
@@ -19,23 +35,23 @@
         }
     </style>
 </head>
-<body class="bg-gray-400 min-h-screen flex flex-col">
+<body class="bg-gray-200 min-h-screen flex flex-col">
 
     {{-- Header (Igual que tu original) --}}
-    <header class="bg-gray-900 text-white shadow-md">
+    <header class="text-white shadow-md" style="background-color: #1B4332;">
         <div class="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
             <div class="flex space-x-8">
-                <a href="{{ route('inicio') }}" class="hover:text-green-300 transition">Inicio</a>
+                <a href="{{ route('inicio') }}" class="text-white hover:text-green-500 transition bg-gray-800 px-4 py-2 rounded-lg text-sm">Inicio</a>
             </div>
             <div>
-                @if(file_exists(public_path('logo.webp')))
-                    <img src="{{ asset('logo.webp') }}" alt="Logo" class="h-10">
+                @if(file_exists(public_path('logo.png')))
+                    <img src="{{ asset('logo.png') }}" alt="Logo" class="h-10">
                 @else
                     <span class="text-2xl font-bold text-green-500">BotanicApp</span>
                 @endif
             </div>
             <div class="flex space-x-8">
-                <a href="/admin" class="text-blue-200 hover:text-white transition bg-blue-900 px-4 py-2 rounded-lg text-sm">Panel Admin</a>
+                <a href="/admin" class="text-white hover:text-green-500 transition bg-gray-800 px-4 py-2 rounded-lg text-sm">Panel Admin</a>
             </div>
         </div>
     </header>
@@ -43,7 +59,7 @@
     <main class="max-w-7xl mx-auto px-6 py-8 flex-grow">
         
         {{-- FORMULARIO DE BÚSQUEDA Y FILTROS --}}
-        <form method="GET" action="{{ route('inicio') }}" class="bg-gray-200 p-6 rounded-xl shadow-sm mb-8">
+        <form method="GET" action="{{ route('inicio') }}" class="bg-gray-300 p-6 rounded-xl shadow-sm mb-8">
             
             {{-- 1. Búsqueda General (Text Search - idx_busqueda_texto_preview) --}}
             <div class="flex flex-col md:flex-row gap-4 mb-4">
@@ -164,9 +180,9 @@
             </div>
         </form>
 
-        {{-- Galería (Mismo código que tenías) --}}
+        {{-- Galería --}}
         @if($items->isEmpty())
-             {{-- ... tu código de "No encontrado" ... --}}
+             {{-- ... Cuando No se ha encontrado datos ... --}}
              <div class="flex flex-col items-center justify-center py-20 bg-white rounded-xl shadow-sm">
                 <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 <p class="text-gray-500 text-xl font-medium">No se encontraron plantas con estos criterios.</p>
@@ -198,19 +214,19 @@
                         }
                     @endphp
 
-                    <div class="bg-white rounded-xl shadow hover:shadow-lg hover:scale-105 transform transition duration-300 p-3 flex flex-col h-full">
+                    <div class="rounded-xl shadow hover:shadow-lg hover:scale-105 transform transition duration-300 p-3 flex flex-col h-full" style="background-color: #ffffff;">
                         <div class="relative overflow-hidden rounded-lg h-48 bg-gray-100">
                             <img src="{{ $imagenUrl }}" alt="{{ $nombreComun }}" class="w-full h-full object-cover">
                         </div>
                         <div class="mt-4 text-center flex-grow">
                             <h6 class="font-bold text-gray-800 text-xl leading-tight">{{ $nombreComun }}</h6>
                             @if($nombreCientifico)
-                                <p class="text-sm text-green-600 italic mt-1 font-medium">{{ $nombreCientifico }}</p>
+                                <p class="text-sm text-gray-600 italic mt-1 font-medium">{{ $nombreCientifico }}</p>
                             @endif
                         </div>
-                        <div class="mt-4 pt-4 border-t border-gray-300">
+                        <div class="mt-4 pt-4">
                             <a href="{{ route('planta.detalle', ['id' => $item->taxonID]) }}" 
-                            class="block w-full py-2 bg-green-50 text-green-700 text-sm font-semibold rounded-lg text-center hover:bg-green-600 hover:text-white transition-colors">
+                            class="block w-full py-2 bg-green-900 text-gray-200 text-sm font-semibold rounded-lg text-center hover:bg-green-700 hover:text-gray-900 transition-colors">
                                 Ver Ficha
                             </a>
                         </div>

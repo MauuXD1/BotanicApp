@@ -23,7 +23,7 @@ use MoonShine\Laravel\Pages\ProfilePage;
 return [
     'title' => env('MOONSHINE_TITLE', 'PAGINA'),
     'logo' => '/storage/logo.png',
-    'logo_small' => '/logo.webp',
+    'logo_small' => '/logo.png',
 
 
     // Default flags

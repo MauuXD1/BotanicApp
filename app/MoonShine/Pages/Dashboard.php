@@ -6,7 +6,11 @@ namespace App\MoonShine\Pages;
 
 use MoonShine\Laravel\Pages\Page;
 use MoonShine\Contracts\UI\ComponentContract;
+use App\Models\Planta;
+use MoonShine\UI\Components\Metrics\Wrapped\ValueMetric;
+use MoonShine\UI\Fields\Preview;
 #[\MoonShine\MenuManager\Attributes\SkipMenu]
+
 
 class Dashboard extends Page
 {
@@ -30,6 +34,16 @@ class Dashboard extends Page
      */
     protected function components(): iterable
 	{
-		return [];
+		return [
+            ValueMetric::make('Total de Plantas Registradas')
+            ->value(Planta::count())->icon('s.archive-box-arrow-down'),
+
+            ValueMetric::make('Meta Mensual de Plantas Registradas de 100')
+            ->value(Planta::whereMonth('created_at', now()->month)->count())
+            ->progress(100) 
+            ->columnSpan(4)->icon('m.chart-pie'),
+            Preview::make('Mapa de la zona')
+            ->fill(view('admin.components.map-picker', ['uniqueId' => uniqid()])),
+        ];
 	}
 }

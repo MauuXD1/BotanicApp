@@ -20,26 +20,15 @@ class GaleriaController extends Controller
         // 1. BÚSQUEDA GENERAL (Uso del Índice de Texto: idx_busqueda_texto_preview)
         // ------------------------------------------------------------------
         if ($request->filled('buscar')) {
-            // La forma más eficiente de usar un índice "text" en MongoDB es con $text $search.
+
             // Busca palabras completas o frases en los campos 'preview.vernacularName' y 'scientificName'
             $query->whereRaw(['$text' => ['$search' => $request->buscar]]);
-            
-            // Opcional: Si prefieres búsqueda parcial (ej: "Men" encuentra "Menta"),
-            // el índice 'text' no es ideal. Si quieres eso, descomenta esto y usa un índice normal:
-            /*
-            $query->where(function($q) use ($request) {
-                $busqueda = $request->buscar;
-                $q->where('preview.vernacularName', 'regex', new \MongoDB\BSON\Regex('^'.$busqueda, 'i'))
-                  ->orWhere('preview.scientificName', 'regex', new \MongoDB\BSON\Regex('^'.$busqueda, 'i'));
-            });
-            */
+        
         }
 
         // ------------------------------------------------------------------
         // 2. FILTROS TAXONÓMICOS (Indices: idx_taxonomico_BCB y idx_taxonomico_BTJ)
         // ------------------------------------------------------------------
-        // Usamos Regex con '^' (empieza con) y 'i' (insensible a mayúsculas).
-        // Al usar '^', MongoDB puede usar el índice para optimizar la búsqueda.
 
         $taxoFields = [
             'kingdom', 'phylum', 'class', 'order', // idx_taxonomico_BCB
@@ -71,7 +60,7 @@ class GaleriaController extends Controller
                 $elemMatch['measurementType'] = new \MongoDB\BSON\Regex('^' . $request->fito_type, 'i');
             }
             if ($request->filled('fito_val')) {
-                // Asumiendo que guardas números, si guardas strings usa Regex. 
+
                 // Aquí intento buscar coincidencias exactas o mayores si es numérico, 
                 // pero lo dejo como regex flexible para texto/número mixto.
                 $elemMatch['measurementValue'] = new \MongoDB\BSON\Regex('^' . $request->fito_val, 'i');
@@ -107,7 +96,7 @@ class GaleriaController extends Controller
         $items = $query->project([
             'taxonID' => 1,
             'preview' => 1,
-            // 'taxonomico' => 1 // Descomentar si necesitas datos taxonómicos en la vista
+            
         ])->paginate(12);
 
         // Añadimos los parámetros a la URL de paginación

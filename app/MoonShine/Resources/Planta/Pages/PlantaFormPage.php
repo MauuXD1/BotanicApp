@@ -52,7 +52,7 @@ class PlantaFormPage extends FormPage
             Box::make('Ubicación Geográfica', [
                 
                 // Mapa (Igual que antes)
-                Preview::make('Mapa Interactivo')
+                Preview::make('Mapa Interactivo. Mueve el marcador para capturar las coordenadas.')
                     ->fill(view('admin.components.map-picker', [
                         'uniqueId' => uniqid(),
                         'lat' => $this->getResource()->getItem()?->georeferencia?->decimalLatitude,

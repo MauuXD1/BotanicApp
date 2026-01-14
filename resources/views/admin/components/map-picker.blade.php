@@ -4,15 +4,15 @@
 <div class="my-4">
     <div id="map-{{ $uniqueId }}" style="height: 400px; width: 100%; border-radius: 0.5rem; z-index: 1;"></div>
     <div class="text-xs text-gray-500 mt-2">
-        Mueve el marcador para capturar las coordenadas.
+        Y no te olvides de sonreir.
     </div>
 </div>
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         // --- 1. CONFIGURACIÓN DEL MAPA ---
-        var lat = {{ $lat ?? -0.201562 }};
-        var lng = {{ $lng ?? -78.479427 }};
+        var lat = {{ $lat ?? -2.305358 }};
+        var lng = {{ $lng ?? -78.118972 }};
         
         var map = L.map('map-{{ $uniqueId }}').setView([lat, lng], 13);
         

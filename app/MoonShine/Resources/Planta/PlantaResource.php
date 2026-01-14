@@ -16,10 +16,11 @@ use MoonShine\ImportExport\Traits\ImportExportConcern;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
 use Illuminate\Database\Eloquent\Model;
+use MoonShine\Support\Attributes\Icon;
 /**
  * @extends ModelResource<Planta>
  */
-
+#[Icon('table-cells')]
 class PlantaResource extends ModelResource implements HasImportExportContract
 {
 
