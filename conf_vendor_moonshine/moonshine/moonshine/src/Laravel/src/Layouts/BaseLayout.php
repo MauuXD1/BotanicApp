@@ -228,7 +228,7 @@ abstract class BaseLayout extends AbstractLayout
                     class="font-semibold text-primary"
                     target="_blank"
                 >
-                    CutCode
+                    Estudiantes de la ESPOCH
                 </a>
                 HTML,
             now()->year,

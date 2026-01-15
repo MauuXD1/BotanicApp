@@ -12,6 +12,7 @@ use MoonShine\Laravel\DependencyInjection\MoonShineConfigurator;
 use App\MoonShine\Resources\MoonShineUser\MoonShineUserResource;
 use App\MoonShine\Resources\MoonShineUserRole\MoonShineUserRoleResource;
 use App\MoonShine\Resources\Planta\PlantaResource;
+use MoonShine\Contracts\ColorManager\PaletteContract;
 
 //use App\MoonShine\Resources\Georeferencia\GeoreferenciaResource;
 
@@ -34,5 +35,7 @@ class MoonShineServiceProvider extends ServiceProvider
                 ...$core->getConfig()->getPages(),
             ])
         ;
+
+        //$config->set('palette', \App\MoonShine\Palettes\CustomPalette::class);
     }
 }
