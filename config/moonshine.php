@@ -22,7 +22,7 @@ use MoonShine\Laravel\Pages\ProfilePage;
 
 return [
     'title' => env('MOONSHINE_TITLE', 'PAGINA'),
-    'logo' => '/storage/logo.png',
+    'logo' => '/logo.png',
     'logo_small' => '/logo.png',
 
 
@@ -48,7 +48,7 @@ return [
         EncryptCookies::class,
         AddQueuedCookiesToResponse::class,
         StartSession::class,
-        AuthenticateSession::class,
+        // AuthenticateSession::class,  // Removed to avoid conflict with MoonShine's auth
         ShareErrorsFromSession::class,
         VerifyCsrfToken::class,
         SubstituteBindings::class,
@@ -81,7 +81,8 @@ return [
 
     // Layout, palette, pages, forms
     'layout' => App\MoonShine\Layouts\MoonShineLayout::class,
-    'palette' => MoonShine\ColorManager\Palettes\PurplePalette::class,
+    //'palette' => MoonShine\ColorManager\Palettes\PurplePalette::class,
+    'palette' => App\MoonShine\Palettes\CustomPalette::class,
 
     'forms' => [
         'login' => LoginForm::class,

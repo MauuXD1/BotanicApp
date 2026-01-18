@@ -11,8 +11,7 @@ use App\MoonShine\Resources\MoonShineUserRole\Pages\MoonShineUserRoleIndexPage;
 use MoonShine\MenuManager\Attributes\Group;
 use MoonShine\MenuManager\Attributes\Order;
 use MoonShine\Support\Attributes\Icon;
-use MoonShine\Support\Enums\Action;
-use MoonShine\Support\ListOf;
+use MoonShine\Support\Enums\Ability;
 
 /**
  * @extends ModelResource<MoonshineUserRole, MoonShineUserRoleIndexPage, MoonShineUserRoleFormPage, null>
@@ -20,8 +19,9 @@ use MoonShine\Support\ListOf;
 #[Icon('bookmark')]
 #[Group('moonshine::ui.resource.system', 'users', translatable: true)]
 #[Order(1)]
-class MoonShineUserRoleResource extends ModelResource
+class MoonShineUserRoleResource extends \MoonShine\Laravel\Resources\ModelResource
 {
+    
     protected string $model = MoonshineUserRole::class;
 
     protected string $column = 'name';
@@ -39,9 +39,16 @@ class MoonShineUserRoleResource extends ModelResource
         return __('moonshine::ui.resource.role');
     }
 
-    protected function activeActions(): ListOf
+    protected function activeActions(): \MoonShine\Support\ListOf
     {
-        return parent::activeActions()->except(Action::VIEW);
+        return parent::activeActions()->except(\MoonShine\Support\Enums\Action::VIEW);
+    }
+
+    protected function isCan(Ability $ability): bool
+    {
+        $user = auth('moonshine')->user();
+        // Only administrators can manage roles
+        return $user->moonshine_user_role_id === 1;
     }
 
     protected function pages(): array

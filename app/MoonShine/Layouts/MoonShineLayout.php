@@ -18,7 +18,7 @@ final class MoonShineLayout extends AppLayout
     /**
      * @var null|class-string<PaletteContract>
      */
-    protected ?string $palette = PurplePalette::class;
+    protected ?string $palette = \App\MoonShine\Palettes\CustomPalette::class;
 
     protected function assets(): array
     {

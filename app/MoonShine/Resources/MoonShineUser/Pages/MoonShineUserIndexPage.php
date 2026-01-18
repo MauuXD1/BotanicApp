@@ -38,7 +38,7 @@ final class MoonShineUserIndexPage extends IndexPage
                 'moonshineUserRole',
                 formatted: static fn (MoonshineUserRole $model) => $model->name ?? 'Admin',
                 resource: MoonShineUserRoleResource::class,
-            )->badge(Color::PURPLE),
+            )->badge(Color::PURPLE)->canSee(fn() => auth('moonshine')->user()->moonshine_user_role_id === 1),
 
             Text::make(__('moonshine::ui.resource.name'), 'name'),
 

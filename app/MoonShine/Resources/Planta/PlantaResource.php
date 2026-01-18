@@ -15,13 +15,12 @@ use MoonShine\ImportExport\Contracts\HasImportExportContract;
 use MoonShine\ImportExport\Traits\ImportExportConcern;
 use MoonShine\UI\Fields\ID;
 use MoonShine\UI\Fields\Text;
-use Illuminate\Database\Eloquent\Model;
-use MoonShine\Support\Attributes\Icon;
+use MoonShine\Support\Enums\Ability;
 /**
  * @extends ModelResource<Planta>
  */
 #[Icon('table-cells')]
-class PlantaResource extends ModelResource implements HasImportExportContract
+class PlantaResource extends \MoonShine\Laravel\Resources\ModelResource implements HasImportExportContract
 {
 
     use ImportExportConcern;
@@ -30,6 +29,18 @@ class PlantaResource extends ModelResource implements HasImportExportContract
     protected string $title = 'Plantas';
     // Columna que se usará para identificar el recurso en relaciones o títulos
     protected string $column = 'plantaID';
+
+    protected function isCan(Ability $ability): bool
+    {
+        $user = auth('moonshine')->user();
+        return match ($ability) {
+            Ability::VIEW_ANY, Ability::VIEW => in_array($user->moonshine_user_role_id, [1, 2, 3]),
+            Ability::CREATE => in_array($user->moonshine_user_role_id, [1, 2, 3]),
+            Ability::UPDATE => in_array($user->moonshine_user_role_id, [1, 2, 3]),
+            Ability::DELETE => in_array($user->moonshine_user_role_id, [1, 2]),
+            default => false,
+        };
+    }
 
     /**
      * @return list<class-string<PageContract>>

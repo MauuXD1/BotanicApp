@@ -36,6 +36,6 @@ class MoonShineServiceProvider extends ServiceProvider
             ])
         ;
 
-        //$config->set('palette', \App\MoonShine\Palettes\CustomPalette::class);
+        $core->getConfig()->set('palette', \App\MoonShine\Palettes\CustomPalette::class);
     }
 }
