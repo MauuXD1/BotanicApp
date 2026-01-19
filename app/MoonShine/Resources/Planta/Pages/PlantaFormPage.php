@@ -54,6 +54,7 @@ class PlantaFormPage extends FormPage
                         "
                     ])->default('PTL-'),
             ]),
+
             Grid::make([
                 // --- TAXONOMÍA ---
                 Column::make([
@@ -95,6 +96,7 @@ class PlantaFormPage extends FormPage
                             ->removable(),
                     ])
                 ])->columnSpan(6),
+
                 // --- PREVIEW ---
                 Column::make([
                     Box::make('Datos Visuales (Preview)', [
@@ -128,6 +130,7 @@ class PlantaFormPage extends FormPage
                     ])
                 ])->columnSpan(6),
             ]),
+            
             // --- DATOS DE ANALISIS CIENTÍFICOS ---
             Box::make('Análisis Fitoquímico', [
                 Json::make('Compuestos Fitoquímicos', 'fitoquimico')
@@ -178,6 +181,7 @@ class PlantaFormPage extends FormPage
                 ]),
             ]),
             // ============================================================
+
         ];
     }
 }
