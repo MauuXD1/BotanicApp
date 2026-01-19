@@ -119,7 +119,7 @@ class PlantaFormPage extends FormPage
                                         '@input' => "document.getElementsByName('taxonomico[scientificName]')[0].value = \$el.value"
                                     ]),
                                 
-                                Image::make('Imagen', 'imagen')
+                                Image::make('Imagen', 'associatedMedia')
                                     ->disk('public') 
                                     ->dir('plantas'),
                                 Text::make('Descripción Corta', 'descripcion'),
