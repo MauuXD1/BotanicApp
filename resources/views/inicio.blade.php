@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catálogo de Plantas</title>
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
     <script src="https://cdn.tailwindcss.com"></script>
     {{-- Estilos adicionales para transiciones suaves --}}
     <style>
@@ -59,7 +61,7 @@
     <main class="max-w-7xl mx-auto px-6 py-8 flex-grow">
         
         {{-- FORMULARIO DE BÚSQUEDA Y FILTROS --}}
-        <form method="GET" action="{{ route('inicio') }}" class="bg-gray-300 p-6 rounded-xl shadow-sm mb-8">
+        <form method="GET" action="{{ route('inicio') }}" class="bg-gray-100 p-6 rounded-xl shadow-sm mb-8">
             
             {{-- 1. Búsqueda General (Text Search - idx_busqueda_texto_preview) --}}
             <div class="flex flex-col md:flex-row gap-4 mb-4">
@@ -96,20 +98,20 @@
                             {{-- Jerarquía Mayor --}}
                             <div class="col-span-2 grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Reino (Kingdom)</label>
+                                    <label class="text-xs font-semibold text-gray-900">Reino</label>
                                     <input type="text" name="kingdom" value="{{ request('kingdom') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-green-500 focus:border-green-500">
                                 </div>
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Filo (Phylum)</label>
+                                    <label class="text-xs font-semibold text-gray-900">División</label>
                                     <input type="text" name="phylum" value="{{ request('phylum') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-green-500 focus:border-green-500">
                                 </div>
                             </div>
                             <div>
-                                <label class="text-xs font-semibold text-gray-900">Clase (Class)</label>
+                                <label class="text-xs font-semibold text-gray-900">Clase </label>
                                 <input type="text" name="class" value="{{ request('class') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-green-500 focus:border-green-500">
                             </div>
                             <div>
-                                <label class="text-xs font-semibold text-gray-900">Orden (Order)</label>
+                                <label class="text-xs font-semibold text-gray-900">Orden </label>
                                 <input type="text" name="order" value="{{ request('order') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-green-500 focus:border-green-500">
                             </div>
                             {{-- Jerarquía Menor (Indice BTJ) --}}
@@ -129,16 +131,16 @@
                         <h3 class="font-bold text-blue-900 mb-3 border-b border-blue-300 pb-1">Análisis Fitoquímico</h3>
                         <div class="space-y-3">
                             <div>
-                                <label class="text-xs font-semibold text-gray-900">Método (Measurement Method)</label>
+                                <label class="text-xs font-semibold text-gray-900">Método de Medición</label>
                                 <input type="text" name="fito_method" value="{{ request('fito_method') }}" placeholder="Ej: HPLC" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Tipo (Type)</label>
+                                    <label class="text-xs font-semibold text-gray-900">Tipo de Medición</label>
                                     <input type="text" name="fito_type" value="{{ request('fito_type') }}" placeholder="Ej: Flavonoids" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Valor (Value)</label>
+                                    <label class="text-xs font-semibold text-gray-900">Valor cualitativo</label>
                                     <input type="text" name="fito_val" value="{{ request('fito_val') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
                                 </div>
                             </div>
@@ -150,16 +152,16 @@
                         <h3 class="font-bold text-purple-800 mb-3 border-b border-purple-300 pb-1">Análisis Fisicoquímico</h3>
                         <div class="space-y-3">
                             <div>
-                                <label class="text-xs font-semibold text-gray-900">Método (Measurement Method)</label>
+                                <label class="text-xs font-semibold text-gray-900">Método de medición</label>
                                 <input type="text" name="fisico_method" value="{{ request('fisico_method') }}" placeholder="Ej: pH Meter" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-purple-500 focus:border-purple-500">
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Tipo (Type)</label>
+                                    <label class="text-xs font-semibold text-gray-900">Tipo de medición</label>
                                     <input type="text" name="fisico_type" value="{{ request('fisico_type') }}" placeholder="Ej: Acidez" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-purple-500 focus:border-purple-500">
                                 </div>
                                 <div>
-                                    <label class="text-xs font-semibold text-gray-900">Valor (Value)</label>
+                                    <label class="text-xs font-semibold text-gray-900">Valor de medición</label>
                                     <input type="text" name="fisico_val" value="{{ request('fisico_val') }}" class="w-full text-sm border-gray-300 rounded p-2 focus:ring-purple-500 focus:border-purple-500">
                                 </div>
                             </div>

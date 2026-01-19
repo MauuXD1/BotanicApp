@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $planta->preview['vernacularName'] ?? 'Detalle de Planta' }} - BotanicApp</title>
     
+    {{-- Favicon --}}
+    <link rel="icon" type="image/png" href="{{ asset('logo.png') }}">
+    
     {{-- TailwindCSS --}}
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -234,10 +237,10 @@
                             <table class="w-full text-left text-sm">
                                 <thead class="bg-gray-50 text-gray-500 font-semibold uppercase tracking-wider">
                                     <tr>
-                                        <th class="py-4 px-6">Compuesto</th>
-                                        <th class="py-4 px-6">Valor / Conc.</th>
-                                        <th class="py-4 px-6">Método</th>
-                                        <th class="py-4 px-6">Notas</th>
+                                        <th class="py-4 px-6">Tipo de Medición</th>
+                                        <th class="py-4 px-6">Valor cualitativo</th>
+                                        <th class="py-4 px-6">Método de Medición</th>
+                                        <th class="py-4 px-6">Observaciones</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100" id="table-fito-body">
@@ -281,19 +284,19 @@
                             <table class="w-full text-left text-sm">
                                 <thead class="bg-gray-50 text-gray-500 font-semibold uppercase tracking-wider">
                                     <tr>
-                                        <th class="py-4 px-6">Parámetro</th>
-                                        <th class="py-4 px-6">Valor</th>
-                                        <th class="py-4 px-6">Unidad</th>
-                                        <th class="py-4 px-6">Referencia</th>
+                                        <th class="py-4 px-6">Tipo de medición</th>
+                                        <th class="py-4 px-6">Valor de medición</th>
+                                        <th class="py-4 px-6">Unidad de medición</th>
+                                        <th class="py-4 px-6">Método de medición</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-100" id="table-fisico-body">
                                     @foreach($fisico as $item)
                                         <tr class="hover:bg-gray-50 transition fisico-row {{ $loop->index >= 8 ? 'hidden' : '' }}">
-                                            <td class="py-4 px-6 font-bold text-gray-800">{{ $item['measurementType'] ?? 'N/A' }}</td>
-                                            <td class="py-4 px-6 text-primary font-bold font-mono">{{ $item['measurementValue'] ?? '--' }}</td>
-                                            <td class="py-4 px-6 text-gray-600">{{ $item['measurementUnit'] ?? '-' }}</td>
-                                            <td class="py-4 px-6 text-gray-500">{{ $item['measurementMethod'] ?? '-' }}</td>
+                                            <td class="py-4 px-6 font-bold text-gray-800">{{ $item['measurementType'] ?? '' }}</td>
+                                            <td class="py-4 px-6 text-primary font-bold font-mono">{{ $item['measurementValue'] ?? '' }}</td>
+                                            <td class="py-4 px-6 text-gray-600">{{ $item['measurementUnit'] ?? '' }}</td>
+                                            <td class="py-4 px-6 text-gray-500">{{ $item['measurementMethod'] ?? '' }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

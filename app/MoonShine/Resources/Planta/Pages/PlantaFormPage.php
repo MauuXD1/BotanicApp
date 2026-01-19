@@ -43,7 +43,115 @@ class PlantaFormPage extends FormPage
             // --- SECCIÓN GENERAL ---
             Box::make('Información General', [
                 ID::make(),
-                Text::make('ID del taxon', 'taxonID')->required(),
+                //Text::make('ID del taxon', 'taxonID')->required(),
+                Text::make('ID del taxon', 'taxonID')
+                    ->required()
+                    ->customAttributes([
+                        // Cuando se escribe aquí, buscamos los campos dentro de los JSONs y les pegamos el valor
+                        '@input' => "
+                            document.getElementsByName('preview[taxonID]')[0].value = \$el.value;
+                            document.getElementsByName('taxonomico[taxonID]')[0].value = \$el.value;
+                        "
+                    ])->default('PTL-'),
+            ]),
+
+            Grid::make([
+                // --- TAXONOMÍA ---
+                Column::make([
+                    Box::make('Información Taxonómica', [
+                        Json::make('Taxonomía', 'taxonomico')
+                            ->fields([
+                                Text::make('ID del taxon', 'taxonID')
+                                    ->required()
+                                    ->customAttributes([
+                                        '@input' => "
+                                        document.getElementsByName('taxonID')[0].value = \$el.value;
+                                        document.getElementsByName('preview[taxonID]')[0].value = \$el.value;
+                                        "
+                                    ])->default('PTL-'),  
+
+                                Text::make('Nombre Común', 'vernacularName')
+                                    ->customAttributes([
+                                        '@input' => "document.getElementsByName('preview[vernacularName]')[0].value = \$el.value"
+                                    ]),
+
+                                Text::make('Nombre Científico', 'scientificName')
+                                    ->customAttributes([
+                                        '@input' => "document.getElementsByName('preview[scientificName]')[0].value = \$el.value"
+                                    ]),
+                                
+                                Text::make('Reino', 'kingdom')->default('Plantae'),
+                                Text::make('División', 'phylum'),
+                                Text::make('Clase', 'class'),
+                                Text::make('Orden', 'order'),
+                                Text::make('Familia', 'family'),
+                                Text::make('Género', 'genus'),
+                                Text::make('Especie', 'especie'),
+                                Json::make('Otros Atributos', 'atributos_extra')
+                                    ->keyValue('Atributo', 'Valor')
+                                    ->removable(),
+                            ])
+                            ->vertical()
+                            ->object()
+                            ->removable(),
+                    ])
+                ])->columnSpan(6),
+
+                // --- PREVIEW ---
+                Column::make([
+                    Box::make('Datos Visuales (Preview)', [
+                        Json::make('Preview', 'preview')
+                            ->fields([
+                                Text::make('ID del Taxon', 'taxonID')
+                                    ->customAttributes([
+                                        '@input' => "
+                                        document.getElementsByName('taxonID')[0].value = \$el.value;
+                                        document.getElementsByName('taxonomico[taxonID]')[0].value = \$el.value;
+                                        "
+                                    ])->default('PTL-'),
+
+                                Text::make('Nombre Común', 'vernacularName')
+                                    ->customAttributes([
+                                        '@input' => "document.getElementsByName('taxonomico[vernacularName]')[0].value = \$el.value"
+                                    ]),
+                                Text::make('Nombre Científico', 'scientificName')
+                                    ->customAttributes([
+                                        '@input' => "document.getElementsByName('taxonomico[scientificName]')[0].value = \$el.value"
+                                    ]),
+                                
+                                Image::make('Imagen', 'imagen')
+                                    ->disk('public') 
+                                    ->dir('plantas'),
+                                Text::make('Descripción Corta', 'descripcion'),
+                            ])
+                            ->vertical()
+                            ->object()
+                            ->removable(),
+                    ])
+                ])->columnSpan(6),
+            ]),
+            
+            // --- DATOS DE ANALISIS CIENTÍFICOS ---
+            Box::make('Análisis Fitoquímico', [
+                Json::make('Compuestos Fitoquímicos', 'fitoquimico')
+                    ->fields([
+                        Text::make('Tipo de Medición', 'measurementType'),
+                        Text::make('Valor cualitativo', 'measurementValue'),                        
+                        Text::make('Método de Medición', 'measurementMethod'),
+                        Text::make('Observaciones', 'measurementRemarks'),
+                    ])
+                    ->removable(),
+            ]),
+
+            Box::make('Análisis Fisicoquímico', [
+                Json::make('Propiedades Fisicoquímicas', 'fisicoquimico')
+                    ->fields([
+                        Text::make('Tipo de medición', 'measurementType')->hint('Ej: pH, Humedad'),
+                        Text::make('Valor de medición', 'measurementValue'),
+                        Text::make('Unidad de medición', 'measurementUnit')->hint('Ej: %, mg/g'),
+                        Text::make('Método de medición', 'measurementMethod'),
+                    ])
+                    ->removable(),
             ]),
 
             // ============================================================
@@ -63,85 +171,17 @@ class PlantaFormPage extends FormPage
                 Grid::make([
                     Column::make([
                         // Solo necesitamos el name 'lat_temp'
-                        Text::make('Latitud', 'lat_temp')
-                            ->required(),
+                        Text::make('Latitud', 'lat_temp'),
                     ])->columnSpan(6),
 
                     Column::make([
                         // Solo necesitamos el name 'lng_temp'
-                        Text::make('Longitud', 'lng_temp')
-                            ->required(),
+                        Text::make('Longitud', 'lng_temp'),
                     ])->columnSpan(6),
                 ]),
             ]),
             // ============================================================
 
-            // --- PREVIEW ---
-            Grid::make([
-                Column::make([
-                    Box::make('Datos Visuales (Preview)', [
-                        Json::make('Preview', 'preview')
-                            ->fields([
-                                Text::make('ID del Taxon', 'taxonID'),
-                                Text::make('Nombre Común', 'vernacularName'),
-                                Text::make('Nombre Científico', 'scientificName'),
-                                Image::make('Imagen', 'imagen')
-                                    ->disk('public') 
-                                    ->dir('plantas'),
-                                Text::make('Descripción Corta', 'descripcion'),
-                            ])
-                            ->vertical()
-                            ->object()
-                            ->removable(),
-                    ])
-                ])->columnSpan(6),
-
-                // --- TAXONOMÍA ---
-                Column::make([
-                    Box::make('Información Taxonómica', [
-                        Json::make('Taxonomía', 'taxonomico')
-                            ->fields([
-                                Text::make('ID del Taxon', 'taxonID'),
-                                Text::make('Reino', 'kingdom')->default('Plantae'),
-                                Text::make('División', 'phylum'),
-                                Text::make('Clase', 'class'),
-                                Text::make('Orden', 'order'),
-                                Text::make('Familia', 'family'),
-                                Text::make('Género', 'genus'),
-                                Text::make('Especie', 'especie'),
-                                Json::make('Otros Atributos', 'atributos_extra')
-                                    ->keyValue('Atributo', 'Valor')
-                                    ->removable(),
-                            ])
-                            ->vertical()
-                            ->object()
-                            ->removable(),
-                    ])
-                ])->columnSpan(6),
-            ]),
-            
-            // --- DATOS DE ANALISIS CIENTÍFICOS ---
-            Box::make('Análisis Fitoquímico', [
-                Json::make('Compuestos Fitoquímicos', 'fitoquimico')
-                    ->fields([
-                        Text::make('Nombre del Compuesto', 'measurementType'),
-                        Text::make('Tipo de Metabolito', 'measurementValue'),                        
-                        Text::make('Método de Extracción', 'measurementMethod'),
-                        Text::make('Concentración', 'measurementRemarks'),
-                    ])
-                    ->removable(),
-            ]),
-
-            Box::make('Análisis Fisicoquímico', [
-                Json::make('Propiedades Fisicoquímicas', 'fisicoquimico')
-                    ->fields([
-                        Text::make('Parámetro', 'measurementType')->hint('Ej: pH, Humedad'),
-                        Text::make('Valor', 'measurementValue'),
-                        Text::make('Unidad', 'measurementUnit')->hint('Ej: %, mg/g'),
-                        Text::make('Referencia / Norma', 'measurementMethod'),
-                    ])
-                    ->removable(),
-            ]),
         ];
     }
 }
