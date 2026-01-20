@@ -20,9 +20,9 @@ use MoonShine\Fields\FieldsGroup;
 use MoonShine\Decorations\Collapse;
 
 // IMPORTANTE: Importar HasOne y el Recurso nuevo
-use MoonShine\Laravel\Fields\Relationships\HasOne; // ✅ Correcto
+use MoonShine\Laravel\Fields\Relationships\HasOne; 
 use App\MoonShine\Resources\Georeferencia\GeoreferenciaResource;
-use MoonShine\UI\Fields\Preview; // ✅ Este es el correcto
+use MoonShine\UI\Fields\Preview; 
 use MoonShine\UI\Fields\Hidden;
 
 
@@ -119,7 +119,7 @@ class PlantaFormPage extends FormPage
                                         '@input' => "document.getElementsByName('taxonomico[scientificName]')[0].value = \$el.value"
                                     ]),
                                 
-                                Image::make('Imagen', 'associatedMedia')
+                                Image::make('Imagen', 'imagen')
                                     ->disk('public') 
                                     ->dir('plantas'),
                                 Text::make('Descripción Corta', 'descripcion'),

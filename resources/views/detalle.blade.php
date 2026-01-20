@@ -90,7 +90,7 @@
         $nombreCientifico = $preview['scientificName'] ?? 'Sin Nombre Científico';
         $descripcion = $preview['descripcion'] ?? 'No hay descripción disponible.';
 
-        $rutaImagen = $preview['imagen'] ?? $preview['associatedMedia'][0] ?? null;
+        $rutaImagen = $preview['imagen'] ?? $preview['imagen'][0] ?? null;
         if ($rutaImagen) {
             $imagenUrl = str_starts_with($rutaImagen, 'http') ? $rutaImagen : asset('storage/' . $rutaImagen);
         } else {
