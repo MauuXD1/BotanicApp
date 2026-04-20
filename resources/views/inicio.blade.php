@@ -182,6 +182,7 @@
             </div>
         </form>
 
+        
         {{-- Galería --}}
         @if($items->isEmpty())
              {{-- ... Cuando No se ha encontrado datos ... --}}
